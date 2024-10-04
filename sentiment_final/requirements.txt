@@ -1,0 +1,10 @@
+matplotlib
+numpy
+streamlit
+pandas
+json
+logging
+collections
+openai
+plotly
+concurrent.futures
