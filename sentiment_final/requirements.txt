@@ -3,7 +3,6 @@ numpy
 streamlit
 pandas
 logging
-collections
 openai
 plotly
 concurrent.futures
