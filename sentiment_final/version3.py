@@ -12,7 +12,7 @@ import concurrent.futures
 
 logging.basicConfig(level=logging.INFO)
 
-client = OpenAI(api_key='sk-proj-hF3LBeShUpk8INEy0jbyT3BlbkFJLg1Pz4dQAenfBsMD1rwj')
+client = OpenAI(api_key='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')
 
 class TranscriptAnalysis:
     def __init__(self, client):
