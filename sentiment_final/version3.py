@@ -306,7 +306,6 @@ def create_topics_chart(topics):
                      hover_data=['related_keywords'], title="Topic Relevance")
     return fig
 
-
 def create_improved_nested_pie_chart(data):
     categories = []
     keywords = []
