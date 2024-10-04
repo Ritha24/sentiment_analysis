@@ -306,11 +306,6 @@ def create_topics_chart(topics):
                      hover_data=['related_keywords'], title="Topic Relevance")
     return fig
 
-def load_json_from_file(filename):
-    with open(filename, 'r') as f:
-        data = json.load(f)
-    logging.info(f"JSON data loaded from {filename}")
-    return data
 
 def create_improved_nested_pie_chart(data):
     categories = []
@@ -427,7 +422,200 @@ def main():
     with tab2:
         st.header("View Saved Analysis")
         try:
-            saved_data = load_json_from_file('openai_summary.json')
+            saved_data = {
+                "overall_sentiment": "Positive",
+                "sentiment_distribution": {
+                    "positive": 72.73,
+                    "neutral": 9.09,
+                    "negative": 18.18
+                },
+                "top_categories_and_keywords": [
+                    {
+                        "category": "Customer Support",
+                        "percentage": 57.14,
+                        "top_keywords": [
+                            {
+                                "keyword": "Canyon Ranch",
+                                "occurrences": 2,
+                                "context": "Customer inquiring about services and reservations at Canyon Ranch"
+                            },
+                            {
+                                "keyword": "dinner reservations",
+                                "occurrences": 1,
+                                "context": "Customer requesting assistance with booking dinner reservations"
+                            },
+                            {
+                                "keyword": "Sara",
+                                "occurrences": 1,
+                                "context": "Mention of a customer service representative named Sara"
+                            },
+                            {
+                                "keyword": "appointments",
+                                "occurrences": 1,
+                                "context": "Discussion regarding scheduling appointments for spa treatments"
+                            },
+                            {
+                                "keyword": "services",
+                                "occurrences": 1,
+                                "context": "Customer asking about available spa services and amenities"
+                            }
+                        ]
+                    },
+                    {
+                        "category": "Hospitality and Service Booking",
+                        "percentage": 14.29,
+                        "top_keywords": [
+                            {
+                                "keyword": "Canyon Ranch Reservations",
+                                "occurrences": 2,
+                                "context": "Specific mention of making reservations at Canyon Ranch"
+                            },
+                            {
+                                "keyword": "menu options",
+                                "occurrences": 1,
+                                "context": "Customer inquiring about available menu options at the resort"
+                            },
+                            {
+                                "keyword": "pricing",
+                                "occurrences": 1,
+                                "context": "Discussion about the pricing of various amenities and services"
+                            }
+                        ]
+                    },
+                    {
+                        "category": "Hospitality - Resort Reservation Inquiry",
+                        "percentage": 14.29,
+                        "top_keywords": [
+                            {
+                                "keyword": "Valco",
+                                "occurrences": 1,
+                                "context": "Mention of a specific resort or property named Valco"
+                            },
+                            {
+                                "keyword": "Kenya Ranch Reservations",
+                                "occurrences": 1,
+                                "context": "Customer expressing interest in booking reservations at Kenya Ranch"
+                            },
+                            {
+                                "keyword": "Tucson property",
+                                "occurrences": 1,
+                                "context": "Conversation about a specific property in Tucson"
+                            }
+                        ]
+                    },
+                    {
+                        "category": "Hospitality Customer Service",
+                        "percentage": 14.29,
+                        "top_keywords": [
+                            {
+                                "keyword": "cancellation",
+                                "occurrences": 1,
+                                "context": "Customer discussing the process of cancelling a reservation"
+                            },
+                            {
+                                "keyword": "refund",
+                                "occurrences": 1,
+                                "context": "Conversation about refund policies for bookings"
+                            },
+                            {
+                                "keyword": "booking",
+                                "occurrences": 1,
+                                "context": "Customer making a booking inquiry"
+                            }
+                        ]
+                    }
+                ],
+                "top_topics": [
+                    {
+                        "topic": "Reservation Inquiries",
+                        "relevance_score": 0.571,
+                        "related_keywords": [
+                            "Canyon Ranch",
+                            "Canyon Ranch Reservations",
+                            "Kenya Ranch Reservations",
+                            "Tucson property"
+                        ]
+                    },
+                    {
+                        "topic": "Customer Service Interactions",
+                        "relevance_score": 0.429,
+                        "related_keywords": [
+                            "Sara",
+                            "appointments",
+                            "services",
+                            "cancellation",
+                            "refund",
+                            "booking"
+                        ]
+                    },
+                    {
+                        "topic": "Hospitality Services and Amenities",
+                        "relevance_score": 0.286,
+                        "related_keywords": [
+                            "spa treatments",
+                            "menu options",
+                            "pricing",
+                            "amenities",
+                            "massage",
+                            "manicures"
+                        ]
+                    }
+                ],
+                "top_strength_areas": [
+                    {
+                        "area": "Customer Satisfaction",
+                        "frequency": 8,
+                        "impact": "Positive interactions with customer support and service booking"
+                    },
+                    {
+                        "area": "Service Efficiency",
+                        "frequency": 6,
+                        "impact": "Efficient handling of reservation inquiries and cancellations"
+                    },
+                    {
+                        "area": "Resort Amenities",
+                        "frequency": 5,
+                        "impact": "Positive feedback on available services and amenities"
+                    }
+                ],
+                "top_weak_areas": [
+                    {
+                        "area": "Reservation Management",
+                        "frequency": 4,
+                        "improvement_suggestion": "Streamline reservation processes and improve clarity on cancellation policies"
+                    },
+                    {
+                        "area": "Customer Communication",
+                        "frequency": 3,
+                        "improvement_suggestion": "Enhance communication with customers regarding booking details and options"
+                    },
+                    {
+                        "area": "Staff Training",
+                        "frequency": 2,
+                        "improvement_suggestion": "Provide additional training for staff to handle customer inquiries effectively"
+                    }
+                ],
+                "insights_for_improvement": [
+                    {
+                        "insight": "Enhance online booking system for easier reservation management",
+                        "priority": "high",
+                        "impact_area": "Customer satisfaction",
+                        "supporting_data": "Increase in positive feedback on user experience and booking process"
+                    },
+                    {
+                        "insight": "Implement customer feedback surveys to gather insights for service improvements",
+                        "priority": "medium",
+                        "impact_area": "Service quality",
+                        "supporting_data": "Identify areas for enhancement based on direct customer input"
+                    },
+                    {
+                        "insight": "Train customer support staff on product knowledge and problem-solving skills",
+                        "priority": "medium",
+                        "impact_area": "Operational efficiency",
+                        "supporting_data": "Faster resolution of customer inquiries and increased satisfaction"
+                    }
+                ]
+            }
 
             st.subheader("Sentiment Distribution")
             sentiment_chart = create_sentiment_chart(saved_data['sentiment_distribution'])
