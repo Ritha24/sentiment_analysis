@@ -15,8 +15,7 @@ import plotly.express as px
 
 logging.basicConfig(level=logging.INFO)
 
-client = OpenAI(api_key='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')
-
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 class TranscriptAnalysis:
     def __init__(self, client):
         self.client = client
