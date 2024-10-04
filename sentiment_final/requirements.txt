@@ -5,3 +5,4 @@ pandas
 logging
 openai
 plotly
+openpyxl
