@@ -346,7 +346,7 @@ def main():
 
     tab1, tab2 = st.tabs(["Upload and Analyze", "View Saved Analysis"])
 
-    with tab1:
+    with tab2:
         st.header("Upload and Analyze Transcripts")
         uploaded_file = st.file_uploader("Choose an Excel file", type="xlsx")
 
@@ -418,7 +418,7 @@ def main():
                 fig = create_improved_nested_pie_chart(openai_data)
                 st.pyplot(fig)
 
-    with tab2:
+    with tab1:
         st.header("View Saved Analysis")
         try:
             saved_data = {
