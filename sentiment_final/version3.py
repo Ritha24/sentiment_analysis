@@ -344,7 +344,7 @@ def main():
     st.set_page_config(layout="wide", page_title="Transcript Analysis Dashboard")
     st.title("Transcript Analysis Dashboard")
 
-    tab1, tab2 = st.tabs(["Upload and Analyze", "View Saved Analysis"])
+    tab1, tab2 = st.tabs(["View Saved Analysis", "Upload and Analyze"])
 
     with tab2:
         st.header("Upload and Analyze Transcripts")
