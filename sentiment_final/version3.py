@@ -383,7 +383,7 @@ def main():
 
                 st.subheader("Top Topics")
                 topics_df = pd.DataFrame(openai_data['top_topics'])
-                st.dataframe(topics_df,start_index=1)    
+                st.dataframe(topics_df)    
 
                 col1, col2 = st.columns(2)
                 with col1:
@@ -865,6 +865,7 @@ def main():
             st.subheader("Top Topics")
             if 'top_topics' in saved_data:
                 topics_df = pd.DataFrame(saved_data['top_topics'])
+                topics_df.index = topics_df.index + 1
                 st.dataframe(topics_df)
             else:
                 st.warning("Topics data not found in saved analysis.")
