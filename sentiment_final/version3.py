@@ -379,16 +379,19 @@ def main():
                 for category in openai_data['top_categories_and_keywords']:
                     st.write(f"**{category['category']}** ({category['percentage']:.2f}%)")
                     keywords_df = pd.DataFrame(category['top_keywords'])
+                    keywords_df.index = keywords_df.index + 1
                     st.dataframe(keywords_df)
 
                 st.subheader("Top Topics")
                 topics_df = pd.DataFrame(openai_data['top_topics'])
+                topics_df.index = topics_df.index + 1
                 st.dataframe(topics_df)    
 
                 col1, col2 = st.columns(2)
                 with col1:
                     st.subheader("Top Strength Areas")
                     strengths_df = pd.DataFrame(openai_data['top_strength_areas'])
+                    strengths_df.index = strengths_df.index + 1
                     st.dataframe(strengths_df)
 
                     if not strengths_df.empty:
@@ -398,6 +401,7 @@ def main():
                 with col2:
                     st.subheader("Top Weak Areas")
                     weaknesses_df = pd.DataFrame(openai_data['top_weak_areas'])
+                    weaknesses_df.index = weaknesses_df.index + 1
                     st.dataframe(weaknesses_df)
                     
                     if not weaknesses_df.empty:
@@ -406,6 +410,7 @@ def main():
 
                 st.subheader("Insights for Improvement")
                 insights_df = pd.DataFrame(openai_data['insights_for_improvement'])
+                insights_df.index = insights_df.index + 1
                 st.dataframe(insights_df)
 
                 col1, col2 = st.columns(2)
@@ -858,6 +863,7 @@ def main():
                 for category in saved_data['top_categories_and_keywords']:
                     st.write(f"**{category['category']}** ({category['percentage']:.2f}%)")
                     keywords_df = pd.DataFrame(category['top_keywords'])
+                    keywords_df.index = keywords_df.index + 1
                     st.dataframe(keywords_df)
             else:
                 st.warning("Categories and keywords data not found in saved analysis.")
@@ -875,6 +881,7 @@ def main():
                 st.subheader("Top Strength Areas")
                 if 'top_strength_areas' in saved_data:
                     strengths_df = pd.DataFrame(saved_data['top_strength_areas'])
+                    strengths_df.index = strengths_df.index + 1
                     st.dataframe(strengths_df)
 
                     if not strengths_df.empty:
@@ -887,6 +894,7 @@ def main():
                 st.subheader("Top Weak Areas")
                 if 'top_weak_areas' in saved_data:
                     weaknesses_df = pd.DataFrame(saved_data['top_weak_areas'])
+                    weaknesses_df.index = weaknesses_df.index + 1
                     st.dataframe(weaknesses_df)
 
                     if not weaknesses_df.empty:
@@ -898,6 +906,7 @@ def main():
             st.subheader("Insights for Improvement")
             if 'insights_for_improvement' in saved_data:
                 insights_df = pd.DataFrame(saved_data['insights_for_improvement'])
+                insights_df.index = insights_df.index + 1
                 st.dataframe(insights_df)
             else:
                 st.warning("Insights for improvement data not found in saved analysis.")
