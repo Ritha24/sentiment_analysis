@@ -383,7 +383,7 @@ def main():
 
                 st.subheader("Top Topics")
                 topics_df = pd.DataFrame(openai_data['top_topics'])
-                st.dataframe(topics_df)    
+                st.dataframe(topics_df,start_index=1)    
 
                 col1, col2 = st.columns(2)
                 with col1:
