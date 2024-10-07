@@ -383,7 +383,7 @@ def main():
                     st.subheader("Top Strength Areas")
                     strengths_df = pd.DataFrame(openai_data['top_strength_areas'])
                     st.dataframe(strengths_df)
-                    
+
                     if not strengths_df.empty:
                         strength_chart = px.bar(strengths_df, x='area', y='frequency', title="Top Strength Areas")
                         st.plotly_chart(strength_chart, use_container_width=True)
@@ -416,7 +416,7 @@ def main():
                 st.pyplot(fig)
 
     with tab1:
-        st.header("View Saved Analysis")
+        st.header("Dashboard")
         try:
             saved_data = {
                 "overall_sentiment": "positive",
