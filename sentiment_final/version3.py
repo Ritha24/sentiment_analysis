@@ -324,7 +324,7 @@ def create_improved_nested_pie_chart(data):
     category_colors = plt.cm.Set3(np.linspace(0, 1, len(categories)))
     outer_colors = plt.cm.Pastel1(np.linspace(0, 1, len(keyword_sizes)))
    
-    ax.pie(keyword_sizes, labels=keywords, colors=outer_colors, radius=1,
+    ax.pie(keyword_sizes, labels=None, colors=outer_colors, radius=1,
            wedgeprops=dict(width=0.3, edgecolor='white'),
            labeldistance=1.05)
    
