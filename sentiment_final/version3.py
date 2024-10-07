@@ -855,6 +855,13 @@ def main():
             else:
                 st.warning("Categories and keywords data not found in saved analysis.")
 
+            st.subheader("Top Topics")
+            if 'top_topics' in saved_data:
+                topics_df = pd.DataFrame(saved_data['top_topics'])
+                st.dataframe(topics_df)
+            else:
+                st.warning("Topics data not found in saved analysis.")
+
             col1, col2 = st.columns(2)
             with col1:
                 st.subheader("Top Strength Areas")
