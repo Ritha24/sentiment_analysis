@@ -319,26 +319,26 @@ def create_improved_nested_pie_chart(data):
             keywords.append(f"{keyword['keyword']} ({keyword['occurrences']})")
             keyword_sizes.append(keyword['occurrences'])
    
-    fig, ax = plt.subplots(figsize=(18, 18))
+    fig, ax = plt.subplots(figsize=(16, 16))
    
     category_colors = plt.cm.Set3(np.linspace(0, 1, len(categories)))
     outer_colors = plt.cm.Pastel1(np.linspace(0, 1, len(keyword_sizes)))
    
     # Outer ring (keywords)
-    wedges_outer, _, _ = ax.pie(keyword_sizes, colors=outer_colors, radius=1,
-                                wedgeprops=dict(width=0.3, edgecolor='white'),
-                                startangle=90)
+    wedges_outer, _ = ax.pie(keyword_sizes, colors=outer_colors, radius=1,
+                             wedgeprops=dict(width=0.3, edgecolor='white'),
+                             startangle=90)
    
     # Inner ring (categories)
-    wedges_inner, _, _ = ax.pie(category_sizes, colors=category_colors, radius=0.7,
-                                wedgeprops=dict(width=0.4, edgecolor='white'),
-                                startangle=90)
+    wedges_inner, _ = ax.pie(category_sizes, colors=category_colors, radius=0.7,
+                             wedgeprops=dict(width=0.4, edgecolor='white'),
+                             startangle=90)
    
     # Add lines and labels for keywords
-    bbox_props = dict(boxstyle="round,pad=0.2", fc="w", ec="k", lw=0.5, alpha=0.7)
+    bbox_props = dict(boxstyle="round,pad=0.2", fc="w", ec="k", lw=0.72, alpha=0.7)
     kw = dict(arrowprops=dict(arrowstyle="-", color="gray", lw=0.5),
               bbox=bbox_props, zorder=0, va="center")
-    
+
     for i, p in enumerate(wedges_outer):
         ang = (p.theta2 - p.theta1) / 2. + p.theta1
         y = np.sin(np.deg2rad(ang))
@@ -346,45 +346,36 @@ def create_improved_nested_pie_chart(data):
         horizontalalignment = {-1: "right", 1: "left"}[int(np.sign(x))]
         connectionstyle = f"angle,angleA=0,angleB={ang}"
         kw["arrowprops"].update({"connectionstyle": connectionstyle})
-       
-        # Further staggering of label positions
-        if i % 3 == 0:
-            xytext = (1.5*np.sign(x), 1.5*y)
-        elif i % 3 == 1:
-            xytext = (1.35*np.sign(x), 1.35*y)
+        xytext = (1.35*np.sign(x), 1.4*y)
+        
+        # Adjust label positions to reduce overlap
+        if i % 2 == 0:
+            xytext = (xytext[0] * 1.1, xytext[1] * 1.1)
         else:
-            xytext = (1.2*np.sign(x), 1.2*y)
-       
+            xytext = (xytext[0] * 0.9, xytext[1] * 0.9)
+        
         ax.annotate(keywords[i], xy=(x, y), xytext=xytext,
                     horizontalalignment=horizontalalignment, **kw,
-                    fontsize=7, wrap=True)
-    
+                    fontsize=8, wrap=True)
+
     # Add labels for categories
     for i, p in enumerate(wedges_inner):
         ang = (p.theta2 - p.theta1) / 2. + p.theta1
         y = np.sin(np.deg2rad(ang))
         x = np.cos(np.deg2rad(ang))
         horizontalalignment = {-1: "right", 1: "left"}[int(np.sign(x))]
-       
-        # Reduce font size for main categories
-        fontsize = 8 if category_sizes[i] > 10 else 9
-       
-        ax.annotate(f"{categories[i]} ({category_sizes[i]:.1f}%)",
-                    xy=(x*0.5, y*0.5),
-                    horizontalalignment=horizontalalignment,
-                    va="center", fontsize=fontsize, fontweight='bold')
-    
+        ax.annotate(f"{categories[i]} ({category_sizes[i]:.1f}%)", 
+                    xy=(x*0.6, y*0.6), 
+                    horizontalalignment=horizontalalignment, 
+                    va="center", fontsize=10, fontweight='bold')
+
     plt.title("Categories and Keywords Distribution", fontsize=16, y=1.05)
-   
+    
     center_circle = plt.Circle((0, 0), 0.3, fc='white')
     ax.add_artist(center_circle)
  
     plt.axis('equal')
-    
-    # Remove tight_layout() and adjust the figure size manually
-    fig.set_size_inches(20, 20)  # Increase figure size
-    fig.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)  # Adjust margins
-    
+    plt.tight_layout()
     return fig
 def main():
     st.set_page_config(layout="wide", page_title="Transcript Analysis")
