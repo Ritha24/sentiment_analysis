@@ -263,7 +263,7 @@ def create_sentiment_chart(sentiment_dist):
         hoverinfo='label+percent',
         textinfo='value+percent',
         textfont_size=14,
-        domain=dict(x=[0, 0.5])  # Adjust the domain to move the pie chart to the left
+        domain=dict(x=[0, 0.5]) 
     )])
     
     fig.update_layout(
@@ -284,7 +284,7 @@ def create_category_chart(categories_data):
     percentages = []
     
     if isinstance(categories_data, dict):
-        # If it's a dictionary, convert it to the expected format
+        
         categories_data = [{"category": k, "percentage": v} for k, v in categories_data.items()]
     
     for category in categories_data:
@@ -292,7 +292,6 @@ def create_category_chart(categories_data):
             categories.append(category.get('category', ''))
             percentages.append(category.get('percentage', 0))
         else:
-            # If it's not a dictionary, assume it's already in the correct format
             categories.append(category)
             percentages.append(categories_data[category])
     
@@ -341,10 +340,10 @@ def create_improved_nested_pie_chart(data):
     return fig
 
 def main():
-    st.set_page_config(layout="wide", page_title="Transcript Analysis Dashboard")
+    st.set_page_config(layout="wide", page_title="Transcript Analysis")
     st.title("Transcript Analysis Dashboard")
 
-    tab1, tab2 = st.tabs(["View Saved Analysis", "Upload and Analyze"])
+    tab1, tab2 = st.tabs(["Dashboard", "Upload and Analyze"])
 
     with tab2:
         st.header("Upload and Analyze Transcripts")
@@ -385,7 +384,6 @@ def main():
                     strengths_df = pd.DataFrame(openai_data['top_strength_areas'])
                     st.dataframe(strengths_df)
                     
-                    # New: Strength Areas Chart
                     if not strengths_df.empty:
                         strength_chart = px.bar(strengths_df, x='area', y='frequency', title="Top Strength Areas")
                         st.plotly_chart(strength_chart, use_container_width=True)
@@ -395,7 +393,6 @@ def main():
                     weaknesses_df = pd.DataFrame(openai_data['top_weak_areas'])
                     st.dataframe(weaknesses_df)
                     
-                    # New: Weak Areas Chart
                     if not weaknesses_df.empty:
                         weak_chart = px.bar(weaknesses_df, x='area', y='frequency', title="Top Weak Areas")
                         st.plotly_chart(weak_chart, use_container_width=True)
@@ -422,199 +419,428 @@ def main():
         st.header("View Saved Analysis")
         try:
             saved_data = {
-                "overall_sentiment": "Positive",
+                "overall_sentiment": "positive",
                 "sentiment_distribution": {
-                    "positive": 72.73,
-                    "neutral": 9.09,
-                    "negative": 18.18
+                    "positive": 68.20,
+                    "neutral": 24.05,
+                    "negative": 7.75
                 },
                 "top_categories_and_keywords": [
                     {
                         "category": "Customer Support",
-                        "percentage": 57.14,
+                        "percentage": 63.10,
                         "top_keywords": [
                             {
-                                "keyword": "Canyon Ranch",
-                                "occurrences": 2,
-                                "context": "Customer inquiring about services and reservations at Canyon Ranch"
-                            },
-                            {
-                                "keyword": "dinner reservations",
-                                "occurrences": 1,
-                                "context": "Customer requesting assistance with booking dinner reservations"
-                            },
-                            {
-                                "keyword": "Sara",
-                                "occurrences": 1,
-                                "context": "Mention of a customer service representative named Sara"
-                            },
-                            {
-                                "keyword": "appointments",
-                                "occurrences": 1,
-                                "context": "Discussion regarding scheduling appointments for spa treatments"
-                            },
-                            {
-                                "keyword": "services",
-                                "occurrences": 1,
-                                "context": "Customer asking about available spa services and amenities"
-                            }
-                        ]
-                    },
-                    {
-                        "category": "Hospitality and Service Booking",
-                        "percentage": 14.29,
-                        "top_keywords": [
-                            {
-                                "keyword": "Canyon Ranch Reservations",
-                                "occurrences": 2,
-                                "context": "Specific mention of making reservations at Canyon Ranch"
-                            },
-                            {
-                                "keyword": "menu options",
-                                "occurrences": 1,
-                                "context": "Customer inquiring about available menu options at the resort"
-                            },
-                            {
-                                "keyword": "pricing",
-                                "occurrences": 1,
-                                "context": "Discussion about the pricing of various amenities and services"
-                            }
-                        ]
-                    },
-                    {
-                        "category": "Hospitality - Resort Reservation Inquiry",
-                        "percentage": 14.29,
-                        "top_keywords": [
-                            {
-                                "keyword": "Valco",
-                                "occurrences": 1,
-                                "context": "Mention of a specific resort or property named Valco"
-                            },
-                            {
-                                "keyword": "Kenya Ranch Reservations",
-                                "occurrences": 1,
-                                "context": "Customer expressing interest in booking reservations at Kenya Ranch"
-                            },
-                            {
-                                "keyword": "Tucson property",
-                                "occurrences": 1,
-                                "context": "Conversation about a specific property in Tucson"
-                            }
-                        ]
-                    },
-                    {
-                        "category": "Hospitality Customer Service",
-                        "percentage": 14.29,
-                        "top_keywords": [
-                            {
-                                "keyword": "cancellation",
-                                "occurrences": 1,
-                                "context": "Customer discussing the process of cancelling a reservation"
-                            },
-                            {
-                                "keyword": "refund",
-                                "occurrences": 1,
-                                "context": "Conversation about refund policies for bookings"
+                                "keyword": "reservation",
+                                "occurrences": 730,
+                                "context": "Assistance provided for making, changing, or canceling reservations"
                             },
                             {
                                 "keyword": "booking",
-                                "occurrences": 1,
-                                "context": "Customer making a booking inquiry"
+                                "occurrences": 526,
+                                "context": "Process of reserving services or activities"
+                            },
+                            {
+                                "keyword": "scheduling",
+                                "occurrences": 260,
+                                "context": "Arranging appointments or activities at Canyon Ranch"
+                            },
+                            {
+                                "keyword": "availability",
+                                "occurrences": 334,
+                                "context": "Information provided on the availability of services or facilities"
+                            },
+                            {
+                                "keyword": "confirmation",
+                                "occurrences": 145,
+                                "context": "Ensuring clients receive confirmation of their bookings or reservations"
+                            },
+                            {
+                                "keyword": "information",
+                                "occurrences": 40,
+                                "context": "Providing detailed and helpful information to customers"
+                            },
+                            {
+                                "keyword": "guidance",
+                                "occurrences": 7,
+                                "context": "Offering assistance and guidance to customers with inquiries"
+                            },
+                            {
+                                "keyword": "contact",
+                                "occurrences": 25,
+                                "context": "Providing contact information for customer support or inquiries"
+                            },
+                            {
+                                "keyword": "helpful",
+                                "occurrences": 17,
+                                "context": "Being helpful and accommodating towards customer needs"
+                            },
+                            {
+                                "keyword": "efficient",
+                                "occurrences": 14,
+                                "context": "Efficiently handling customer inquiries or requests"
+                            }
+                        ]
+                    },
+                    {
+                        "category": "Hospitality",
+                        "percentage": 10.41,
+                        "top_keywords": [
+                            {
+                                "keyword": "activities",
+                                "occurrences": 271,
+                                "context": "Information about available activities or programs at Canyon Ranch"
+                            },
+                            {
+                                "keyword": "services",
+                                "occurrences": 257,
+                                "context": "Details about the services offered at Canyon Ranch"
+                            },
+                            {
+                                "keyword": "pricing",
+                                "occurrences": 230,
+                                "context": "Providing pricing information for services or packages"
+                            },
+                            {
+                                "keyword": "spa services",
+                                "occurrences": 175,
+                                "context": "Description of various spa services offered at Canyon Ranch"
+                            },
+                            {
+                                "keyword": "facial",
+                                "occurrences": 143,
+                                "context": "Specific mention of facial treatments or services"
+                            },
+                            {
+                                "keyword": "spa day",
+                                "occurrences": 140,
+                                "context": "Promotion or availability of spa day packages"
+                            },
+                            {
+                                "keyword": "rates",
+                                "occurrences": 173,
+                                "context": "Discussion of rates or pricing for different services"
+                            },
+                            {
+                                "keyword": "personalized",
+                                "occurrences": 18,
+                                "context": "Offering personalized or tailored services to customers"
+                            },
+                            {
+                                "keyword": "recommendations",
+                                "occurrences": 6,
+                                "context": "Providing recommendations on services or activities"
+                            },
+                            {
+                                "keyword": "options",
+                                "occurrences": 58,
+                                "context": "Informing customers about their different options or choices"
+                            }
+                        ]
+                    },
+                    {
+                        "category": "Sales",
+                        "percentage": 2.70,
+                        "top_keywords": [
+                            {
+                                "keyword": "appointment",
+                                "occurrences": 192,
+                                "context": "Scheduling appointments for services or consultations"
+                            },
+                            {
+                                "keyword": "email",
+                                "occurrences": 147,
+                                "context": "Using email communication for inquiries or confirmations"
+                            },
+                            {
+                                "keyword": "package",
+                                "occurrences": 19,
+                                "context": "Description of different package deals or offers"
+                            },
+                            {
+                                "keyword": "inquiries",
+                                "occurrences": 11,
+                                "context": "Handling customer inquiries about services or pricing"
+                            },
+                            {
+                                "keyword": "room options",
+                                "occurrences": 14,
+                                "context": "Providing information on room options for accommodation"
+                            },
+                            {
+                                "keyword": "availability details",
+                                "occurrences": 5,
+                                "context": "Sharing detailed information about availability of services"
+                            },
+                            {
+                                "keyword": "contact information",
+                                "occurrences": 25,
+                                "context": "Giving customers contact information for inquiries or bookings"
+                            },
+                            {
+                                "keyword": "detailed",
+                                "occurrences": 52,
+                                "context": "Providing detailed explanations or descriptions of services"
+                            },
+                            {
+                                "keyword": "information on packages",
+                                "occurrences": 6,
+                                "context": "Explaining the various packages available to customers"
+                            },
+                            {
+                                "keyword": "rates and services",
+                                "occurrences": 11,
+                                "context": "Discussion of pricing rates and services provided"
+                            }
+                        ]
+                    },
+                    {
+                        "category": "Appointment Scheduling",
+                        "percentage": 1.58,
+                        "top_keywords": [
+                            {
+                                "keyword": "appointment",
+                                "occurrences": 192,
+                                "context": "Assisting customers in scheduling appointments for services"
+                            },
+                            {
+                                "keyword": "scheduling",
+                                "occurrences": 260,
+                                "context": "Handling the scheduling of appointments or activities efficiently"
+                            },
+                            {
+                                "keyword": "efficient",
+                                "occurrences": 14,
+                                "context": "Efficiently managing the scheduling process for appointments"
+                            },
+                            {
+                                "keyword": "flexibility",
+                                "occurrences": 12,
+                                "context": "Offering flexibility in scheduling appointments to meet customer needs"
+                            },
+                            {
+                                "keyword": "appointment details",
+                                "occurrences": 22,
+                                "context": "Communicating clearly the details of customer appointments"
+                            },
+                            {
+                                "keyword": "assist",
+                                "occurrences": 7,
+                                "context": "Providing necessary assistance in scheduling appointments"
+                            },
+                            {
+                                "keyword": " appointment process",
+                                "occurrences": 9,
+                                "context": "Ensuring a smooth and efficient process for booking appointments"
+                            },
+                            {
+                                "keyword": "efficient appointment",
+                                "occurrences": 6,
+                                "context": "Efficiently handling the process of scheduling appointments"
+                            },
+                            {
+                                "keyword": "scheduling process",
+                                "occurrences": 6,
+                                "context": "Streamlining the process of scheduling customer appointments"
+                            },
+                            {
+                                "keyword": "activities",
+                                "occurrences": 7,
+                                "context": "Assisting customers in scheduling various activities at Canyon Ranch"
                             }
                         ]
                     }
                 ],
                 "top_topics": [
                     {
-                        "topic": "Reservation Inquiries",
-                        "relevance_score": 0.571,
-                        "related_keywords": [
-                            "Canyon Ranch",
-                            "Canyon Ranch Reservations",
-                            "Kenya Ranch Reservations",
-                            "Tucson property"
-                        ]
+                        "topic": "Reservation Process",
+                        "relevance_score": 0.25,
+                        "related_keywords": ["reservation", "booking", "scheduling", "availability", "confirmation"]
                     },
                     {
-                        "topic": "Customer Service Interactions",
-                        "relevance_score": 0.429,
-                        "related_keywords": [
-                            "Sara",
-                            "appointments",
-                            "services",
-                            "cancellation",
-                            "refund",
-                            "booking"
-                        ]
+                        "topic": "Service Information",
+                        "relevance_score": 0.17,
+                        "related_keywords": ["services", "spa services", "facial", "activities", "pricing"]
                     },
                     {
-                        "topic": "Hospitality Services and Amenities",
-                        "relevance_score": 0.286,
-                        "related_keywords": [
-                            "spa treatments",
-                            "menu options",
-                            "pricing",
-                            "amenities",
-                            "massage",
-                            "manicures"
-                        ]
+                        "topic": "Customer Assistance",
+                        "relevance_score": 0.12,
+                        "related_keywords": ["information", "contact", "helpful", "guidance", "recommendations"]
+                    },
+                    {
+                        "topic": "Appointment Management",
+                        "relevance_score": 0.09,
+                        "related_keywords": ["appointment", "email", "package", "room options", "contact information"]
+                    },
+                    {
+                        "topic": "Customer Communication",
+                        "relevance_score": 0.08,
+                        "related_keywords": ["detailed", "room options", "availability details", "information on packages", "contact information"]
+                    },
+                    {
+                        "topic": "Pricing and Rates",
+                        "relevance_score": 0.07,
+                        "related_keywords": ["rates", "pricing", "rates and services", "clear communication of rates", "rate details"]
+                    },
+                    {
+                        "topic": "Customer Care",
+                        "relevance_score": 0.06,
+                        "related_keywords": ["hospitality", "customer support", "professionalism", "courteous tone", "friendly tone"]
+                    },
+                    {
+                        "topic": "Feedback and Suggestions",
+                        "relevance_score": 0.05,
+                        "related_keywords": ["feedback", "customer survey", "suggestions", "recommendations", "improvement areas"]
+                    },
+                    {
+                        "topic": "Service Customization",
+                        "relevance_score": 0.04,
+                        "related_keywords": ["personalized", "recommendations", "options", "personalized service", "customer preferences"]
+                    },
+                    {
+                        "topic": "Client Engagement",
+                        "relevance_score": 0.03,
+                        "related_keywords": ["customer engagement", "personalized service", "emotional connection", "customer satisfaction", "client relationship"]
+                    },
+                    {
+                        "topic": "Operational Efficiency",
+                        "relevance_score": 0.03,
+                        "related_keywords": ["efficiency", "accuracy", "timeliness", "scheduling process", "streamlining operations"]
+                    },
+                    {
+                        "topic": "Problem Resolution",
+                        "relevance_score": 0.02,
+                        "related_keywords": ["issue resolution", "problem-solving", "complaint handling", "resolution process", "escalation procedure"]
                     }
                 ],
                 "top_strength_areas": [
                     {
-                        "area": "Customer Satisfaction",
-                        "frequency": 8,
-                        "impact": "Positive interactions with customer support and service booking"
+                        "area": "Clear communication",
+                        "frequency": 358,
+                        "impact": "Clear communication leads to enhanced customer understanding and satisfaction"
                     },
                     {
-                        "area": "Service Efficiency",
-                        "frequency": 6,
-                        "impact": "Efficient handling of reservation inquiries and cancellations"
+                        "area": "Efficient booking process",
+                        "frequency": 118,
+                        "impact": "Efficient booking process results in time-saving for customers and staff"
                     },
                     {
-                        "area": "Resort Amenities",
-                        "frequency": 5,
-                        "impact": "Positive feedback on available services and amenities"
+                        "area": "Professionalism in handling customer inquiries",
+                        "frequency": 22,
+                        "impact": "Maintaining a high level of professionalism when addressing customer questions."
+                    },
+                    {
+                        "area": "Detailed information provided",
+                        "frequency": 42,
+                        "impact": "Detailed information helps customers make informed decisions"
+                    },
+                    {
+                        "area": "Friendly tone",
+                        "frequency": 38,
+                        "impact": "A friendly tone creates a welcoming and positive customer experience"
+                    },
+                    {
+                        "area": "Helpful assistance",
+                        "frequency": 17,
+                        "impact": "Helpful assistance improves customer satisfaction and loyalty"
+                    },
+                    {
+                        "area": "Efficient scheduling",
+                        "frequency": 30,
+                        "impact": "Efficient scheduling saves time and improves customer experience"
+                    },
+                    {
+                        "area": "Personalized service",
+                        "frequency": 12,
+                        "impact": "Personalized service enhances customer connection and loyalty"
+                    },
+                    {
+                        "area": "Accommodating customer requests",
+                        "frequency": 11,
+                        "impact": "Accommodating customer requests leads to increased satisfaction"
+                    },
+                    {
+                        "area": "Clear instructions for leaving a message",
+                        "frequency": 7,
+                        "impact": "Clear instructions ensure effective communication and follow-up"
                     }
                 ],
                 "top_weak_areas": [
                     {
-                        "area": "Reservation Management",
+                        "area": "Lack of personalization",
+                        "frequency": 5,
+                        "improvement_suggestion": "Implement personalized recommendations based on customer preferences"
+                    },
+                    {
+                        "area": "Could improve clarity on cancellation policies",
                         "frequency": 4,
-                        "improvement_suggestion": "Streamline reservation processes and improve clarity on cancellation policies"
+                        "improvement_suggestion": "Clarify and communicate cancellation policies clearly to customers"
                     },
                     {
-                        "area": "Customer Communication",
+                        "area": "Lack of emotional engagement",
+                        "frequency": 5,
+                        "improvement_suggestion": "Enhance emotional connection with customers in interactions"
+                    },
+                    {
+                        "area": "Verification process could be more streamlined",
                         "frequency": 3,
-                        "improvement_suggestion": "Enhance communication with customers regarding booking details and options"
+                        "improvement_suggestion": "Optimize the verification process for smoother customer experience"
                     },
                     {
-                        "area": "Staff Training",
-                        "frequency": 2,
-                        "improvement_suggestion": "Provide additional training for staff to handle customer inquiries effectively"
-                    }
+                        "area": "Clarity of communication could be improved",
+                        "frequency": 3,
+                        "improvement_suggestion": "Enhance clarity in communication to avoid misunderstandings"
+                    },
+                    {
+                        "area": "Limited availability of preferred providers",
+                        "frequency": 3,
+                        "improvement_suggestion": "Increase availability of preferred service providers for customer satisfaction"
+                    },
+                    {
+                        "area": "Brief interruption during the call",
+                        "frequency": 3,
+                        "improvement_suggestion": "Minimize interruptions during customer interactions for better service"
+                    },
+                    {
+                        "area": "Limited availability for spa services",
+                        "frequency": 3,
+                        "improvement_suggestion": "Expand availability of spa services to meet customer demand"
+                    },
                 ],
                 "insights_for_improvement": [
                     {
-                        "insight": "Enhance online booking system for easier reservation management",
+                        "insight": "Enhance personalization in customer interactions",
                         "priority": "high",
-                        "impact_area": "Customer satisfaction",
-                        "supporting_data": "Increase in positive feedback on user experience and booking process"
+                        "impact_area": "customer satisfaction",
+                        "supporting_data": "Customers appreciate tailored recommendations and services"
                     },
                     {
-                        "insight": "Implement customer feedback surveys to gather insights for service improvements",
+                        "insight": "Expand service availability for better customer access",
                         "priority": "medium",
-                        "impact_area": "Service quality",
-                        "supporting_data": "Identify areas for enhancement based on direct customer input"
+                        "impact_area": "operational efficiency",
+                        "supporting_data": "Increasing availability can lead to higher revenue and customer satisfaction"
                     },
                     {
-                        "insight": "Train customer support staff on product knowledge and problem-solving skills",
+                        "insight": "Improve emotional engagement with customers",
                         "priority": "medium",
-                        "impact_area": "Operational efficiency",
-                        "supporting_data": "Faster resolution of customer inquiries and increased satisfaction"
+                        "impact_area": "customer satisfaction",
+                        "supporting_data": "Building emotional connections can foster loyalty and return visits"
+                    },
+                    {
+                        "insight": "Streamline reservation process for efficiency",
+                        "priority": "high",
+                        "impact_area": "operational efficiency",
+                        "supporting_data": "Efficient processes lead to smoother operations and improved customer experience"
+                    },
+                    {
+                        "insight": "Enhance service customization based on preferences",
+                        "priority": "medium",
+                        "impact_area": "customer satisfaction",
+                        "supporting_data": "Tailored services can create memorable experiences for customers"
                     }
                 ]
             }
+
 
             st.subheader("Sentiment Distribution")
             sentiment_chart = create_sentiment_chart(saved_data['sentiment_distribution'])
@@ -635,8 +861,7 @@ def main():
                 if 'top_strength_areas' in saved_data:
                     strengths_df = pd.DataFrame(saved_data['top_strength_areas'])
                     st.dataframe(strengths_df)
-                    
-                    # New: Strength Areas Chart
+
                     if not strengths_df.empty:
                         strength_chart = px.bar(strengths_df, x='area', y='frequency', title="Top Strength Areas")
                         st.plotly_chart(strength_chart, use_container_width=True)
@@ -648,8 +873,7 @@ def main():
                 if 'top_weak_areas' in saved_data:
                     weaknesses_df = pd.DataFrame(saved_data['top_weak_areas'])
                     st.dataframe(weaknesses_df)
-                    
-                    # New: Weak Areas Chart
+
                     if not weaknesses_df.empty:
                         weak_chart = px.bar(weaknesses_df, x='area', y='frequency', title="Top Weak Areas")
                         st.plotly_chart(weak_chart, use_container_width=True)
