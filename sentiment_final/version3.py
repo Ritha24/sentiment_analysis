@@ -319,7 +319,7 @@ def create_improved_nested_pie_chart(data):
             keywords.append(f"{keyword['keyword']} ({keyword['occurrences']})")
             keyword_sizes.append(keyword['occurrences'])
    
-    fig, ax = plt.subplots(figsize=(12, 10))
+    fig, ax = plt.subplots(figsize=(15, 13))
    
     category_colors = plt.cm.Set3(np.linspace(0, 1, len(categories)))
     outer_colors = plt.cm.Pastel1(np.linspace(0, 1, len(keyword_sizes)))
