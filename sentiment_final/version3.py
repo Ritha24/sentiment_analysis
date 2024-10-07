@@ -319,35 +319,27 @@ def create_improved_nested_pie_chart(data):
             keywords.append(f"{keyword['keyword']} ({keyword['occurrences']})")
             keyword_sizes.append(keyword['occurrences'])
    
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 10))
-    
+    fig, ax = plt.subplots(figsize=(15, 13))
+   
     category_colors = plt.cm.Set3(np.linspace(0, 1, len(categories)))
-    keyword_colors = plt.cm.Pastel1(np.linspace(0, 1, len(keywords)))
+    outer_colors = plt.cm.Pastel1(np.linspace(0, 1, len(keyword_sizes)))
    
-    # Outer pie (keywords)
-    wedges_outer, _ = ax1.pie(keyword_sizes, colors=keyword_colors, radius=1,
-                              wedgeprops=dict(width=0.3, edgecolor='white'))
+    ax.pie(keyword_sizes, labels=keywords, colors=outer_colors, radius=1,
+           wedgeprops=dict(width=0.3, edgecolor='white'),
+           labeldistance=1.05)
    
-    # Inner pie (categories)
-    wedges_inner, _ = ax1.pie(category_sizes, colors=category_colors, radius=0.7,
-                              wedgeprops=dict(width=0.4, edgecolor='white'),
-                              autopct='%1.1f%%', pctdistance=0.75)
+    ax.pie(category_sizes, labels=categories, colors=category_colors, radius=0.7,
+           wedgeprops=dict(width=0.4, edgecolor='white'),
+           labeldistance=0.6, autopct='%1.1f%%', pctdistance=0.75)
    
     center_circle = plt.Circle((0, 0), 0.3, fc='white')
-    ax1.add_artist(center_circle)
+    ax.add_artist(center_circle)
+    
+    # Adding legend with colors denoting names
+    ax.legend(labels=keywords, loc='center left', bbox_to_anchor=(1, 0.5))
  
-    ax1.axis('equal')
-    
-    # Create legend
-    legend_elements = [plt.Rectangle((0,0),1,1, facecolor=category_colors[i], edgecolor='none') for i in range(len(categories))]
-    legend_elements += [plt.Rectangle((0,0),1,1, facecolor=keyword_colors[i], edgecolor='none') for i in range(len(keywords))]
-    
-    ax2.legend(legend_elements, categories + keywords, loc='center', bbox_to_anchor=(0.5, 0.5))
-    ax2.axis('off')
-    
-    plt.suptitle("Categories and Keywords Distribution", fontsize=16)
+    plt.axis('equal')
     plt.tight_layout()
-
     return fig
 
 def main():
