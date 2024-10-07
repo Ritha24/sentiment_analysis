@@ -319,26 +319,52 @@ def create_improved_nested_pie_chart(data):
             keywords.append(f"{keyword['keyword']} ({keyword['occurrences']})")
             keyword_sizes.append(keyword['occurrences'])
    
-    fig, ax = plt.subplots(figsize=(15, 13))
+    fig, ax = plt.subplots(figsize=(12, 10))
    
     category_colors = plt.cm.Set3(np.linspace(0, 1, len(categories)))
     outer_colors = plt.cm.Pastel1(np.linspace(0, 1, len(keyword_sizes)))
    
-    ax.pie(keyword_sizes, labels=keywords, colors=outer_colors, radius=1,
-           wedgeprops=dict(width=0.3, edgecolor='white'),
-           labeldistance=1.05)
+    # Outer ring (keywords)
+    wedges_outer, texts_outer, autotexts_outer = ax.pie(keyword_sizes, colors=outer_colors, radius=1,
+                                                        wedgeprops=dict(width=0.3, edgecolor='white'),
+                                                        autopct='', pctdistance=0.85)
    
-    ax.pie(category_sizes, labels=categories, colors=category_colors, radius=0.7,
-           wedgeprops=dict(width=0.4, edgecolor='white'),
-           labeldistance=0.6, autopct='%1.1f%%', pctdistance=0.75)
+    # Inner ring (categories)
+    wedges_inner, texts_inner, autotexts_inner = ax.pie(category_sizes, colors=category_colors, radius=0.7,
+                                                        wedgeprops=dict(width=0.4, edgecolor='white'),
+                                                        autopct='%1.1f%%', pctdistance=0.75)
    
+    # Add lines and labels for keywords
+    bbox_props = dict(boxstyle="round,pad=0.3", fc="w", ec="k", lw=0.72)
+    kw = dict(arrowprops=dict(arrowstyle="-"), bbox=bbox_props, zorder=0, va="center")
+
+    for i, p in enumerate(wedges_outer):
+        ang = (p.theta2 - p.theta1) / 2. + p.theta1
+        y = np.sin(np.deg2rad(ang))
+        x = np.cos(np.deg2rad(ang))
+        horizontalalignment = {-1: "right", 1: "left"}[int(np.sign(x))]
+        connectionstyle = f"angle,angleA=0,angleB={ang}"
+        kw["arrowprops"].update({"connectionstyle": connectionstyle})
+        ax.annotate(keywords[i], xy=(x, y), xytext=(1.35*np.sign(x), 1.4*y),
+                    horizontalalignment=horizontalalignment, **kw)
+
+    # Add labels for categories
+    for i, p in enumerate(wedges_inner):
+        ang = (p.theta2 - p.theta1) / 2. + p.theta1
+        y = np.sin(np.deg2rad(ang))
+        x = np.cos(np.deg2rad(ang))
+        horizontalalignment = {-1: "right", 1: "left"}[int(np.sign(x))]
+        ax.annotate(categories[i], xy=(x, y), xytext=(0.7*np.sign(x), 0.7*y),
+                    horizontalalignment=horizontalalignment, va="center")
+
+    plt.title("Categories and Keywords Distribution", fontsize=16, y=1.05)
+    
     center_circle = plt.Circle((0, 0), 0.3, fc='white')
     ax.add_artist(center_circle)
  
     plt.axis('equal')
     plt.tight_layout()
     return fig
-
 def main():
     st.set_page_config(layout="wide", page_title="Transcript Analysis")
     st.title("Transcript Analysis Dashboard")
@@ -377,6 +403,10 @@ def main():
                     st.write(f"**{category['category']}** ({category['percentage']:.2f}%)")
                     keywords_df = pd.DataFrame(category['top_keywords'])
                     st.dataframe(keywords_df)
+
+                st.subheader("Top Topics")
+                topics_df = pd.DataFrame(openai_data['top_topics'])
+                st.dataframe(topics_df)    
 
                 col1, col2 = st.columns(2)
                 with col1:
