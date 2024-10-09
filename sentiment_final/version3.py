@@ -269,17 +269,17 @@ def create_sentiment_chart(sentiment_dist):
         labels=list(sentiment_dist.keys()),
         values=list(sentiment_dist.values()),
         marker=dict(
-            colors=colors,
-            line=dict(color='#FFFFFF', width=2),
-            gradient=dict(
-                type='radial',
-                color=gradient_colors,
-                radialaxis=dict(
-                    visible=True,
-                    range=[0, 1]
-                )
+        colors=colors,
+        line=dict(color='#FFFFFF', width=2),
+        gradient=dict(
+            type='radial',
+            color=gradient_colors,
+            radialaxis=dict(
+                visible=True,
+                range=[0, 1]
             )
-        ),
+        )
+    ),
         hoverinfo='label+percent',
         textinfo='value+percent',
         textfont=dict(size=14, color='black'),
