@@ -254,34 +254,37 @@ def summarize_with_openai(summary):
 
     return analyzer.LLMClient(prompt)
 def create_sentiment_chart(sentiment_dist):
-    labels = list(sentiment_dist.keys())
-    values = list(sentiment_dist.values())
-    
-    # Create a continuous color scale
-    colors = px.colors.sequential.Viridis
+    # Define gradient color ranges for each slice
+    color_ranges = [
+        ['rgb(255,99,97)', 'rgb(255,166,0)'],  # Red to Orange
+        ['rgb(255,166,0)', 'rgb(255,214,0)'],  # Orange to Yellow
+        ['rgb(255,214,0)', 'rgb(0,204,150)'],  # Yellow to Teal
+        ['rgb(0,204,150)', 'rgb(105,80,161)'],  # Teal to Purple
+        ['rgb(105,80,161)', 'rgb(255,99,97)']   # Purple to Red
+    ]
 
-    # Create the pie chart with a color gradient
+    # Create gradient colors for each slice
+    colors = []
+    for i, (sentiment, value) in enumerate(sentiment_dist.items()):
+        color_scale = pc.make_colorscale(color_ranges[i % len(color_ranges)])
+        colors.extend([pc.sample_colorscale(color_scale, j/10) for j in range(10)])
+
     fig = go.Figure(data=[go.Pie(
-        labels=labels,
-        values=values,
-        marker=dict(
-            colors=colors,
-            line=dict(color='#FFFFFF', width=2)
-        ),
+        labels=list(sentiment_dist.keys()),
+        values=list(sentiment_dist.values()),
+        marker=dict(colors=colors, line=dict(color='#FFFFFF', width=2)),
         hoverinfo='label+percent',
         textinfo='value+percent',
-        textfont=dict(size=14, color='black'),
-        domain=dict(x=[0, 0.5])
+        textfont=dict(size=14, color='white'),
+        hole=0.3
     )])
 
     fig.update_layout(
-        legend=dict(
-            orientation="h",
-            yanchor="bottom",
-            y=-0.3,
-            xanchor="center",
-            x=0.5
-        ),
+        title='Pie Infographic',
+        annotations=[dict(text='PIE', x=0.5, y=0.5, font_size=20, showarrow=False)],
+        showlegend=False,
+        width=600,
+        height=600,
         margin=dict(t=50, b=50, l=50, r=50)
     )
 
