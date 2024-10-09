@@ -10,7 +10,6 @@ import plotly.express as px
 import plotly.graph_objects as go
 import concurrent.futures
 from wordcloud import WordCloud
-import plotly.colors as pc
 
 logging.basicConfig(level=logging.INFO)
 
@@ -255,33 +254,22 @@ def summarize_with_openai(summary):
 
     return analyzer.LLMClient(prompt)
 def create_sentiment_chart(sentiment_dist):
-    # Define gradient color ranges for each slice
-    color_ranges = [
-        ['rgb(255,99,97)', 'rgb(255,166,0)'],  # Red to Orange
-        ['rgb(255,166,0)', 'rgb(255,214,0)'],  # Orange to Yellow
-        ['rgb(255,214,0)', 'rgb(0,204,150)'],  # Yellow to Teal
-        ['rgb(0,204,150)', 'rgb(105,80,161)'],  # Teal to Purple
-        ['rgb(105,80,161)', 'rgb(255,99,97)']   # Purple to Red
-    ]
-
-    # Create gradient colors for each slice
-    colors = []
-    for i, (sentiment, value) in enumerate(sentiment_dist.items()):
-        color_scale = pc.make_colorscale(color_ranges[i % len(color_ranges)])
-        colors.extend([pc.sample_colorscale(color_scale, j/10) for j in range(10)])
+    # Define solid colors for each slice
+    colors = ['#0066CC', '#FF3333', '#66CCFF']  # Dark blue, Red, Light blue
 
     fig = go.Figure(data=[go.Pie(
         labels=list(sentiment_dist.keys()),
         values=list(sentiment_dist.values()),
         marker=dict(colors=colors, line=dict(color='#FFFFFF', width=2)),
-        hoverinfo='label+percent',
         textinfo='value+percent',
+        textposition='inside',
+        insidetextorientation='radial',
         textfont=dict(size=14, color='white'),
-        hole=0.3
+        hole=0.4
     )])
 
     fig.update_layout(
-        title='Pie Infographic',
+        title=dict(text='Pie Infographic', x=0.5, y=0.95),
         annotations=[dict(text='PIE', x=0.5, y=0.5, font_size=20, showarrow=False)],
         showlegend=False,
         width=600,
@@ -290,7 +278,6 @@ def create_sentiment_chart(sentiment_dist):
     )
 
     return fig
-
 def create_topics_chart(topics):
     df = pd.DataFrame(topics)
     fig = px.scatter(df, x='topic', y='relevance_score', size='relevance_score', 
