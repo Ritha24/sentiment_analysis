@@ -255,14 +255,32 @@ def summarize_with_openai(summary):
 
     return analyzer.LLMClient(prompt)
 
-def get_color_gradient(color1, color2, n):
-    return [mcolors.to_hex(mcolors.LinearSegmentedColormap.from_list("", [color1, color2])(i)) for i in range(n)]
+def hex_to_RGB(hex_str):
+    """ #FFFFFF -> [255,255,255]"""
+    return [int(hex_str[i:i+2], 16) for i in range(1,6,2)]
+
+def get_color_gradient(c1, c2, n):
+    """
+    Given two hex colors, returns a color gradient
+    with n colors.
+    """
+    assert n > 1
+    c1_rgb = np.array(hex_to_RGB(c1))/255
+    c2_rgb = np.array(hex_to_RGB(c2))/255
+    mix_pcts = [x/(n-1) for x in range(n)]
+    rgb_colors = [((1-mix)*c1_rgb + (mix*c2_rgb)) for mix in mix_pcts]
+    return ["#" + "".join([format(int(round(val*255)), "02x") for val in item]) for item in rgb_colors]
 
 def create_sentiment_chart(sentiment_dist):
-    color1 = '#FB575D'
-    color2 = '#15251B'
-    n_colors = len(sentiment_dist)
-    colors = get_color_gradient(color1, color2, n_colors)
+    # Define start and end colors for the gradient
+    start_color = '#ff6361'
+    end_color = '#bc5090'
+    
+    # Get the number of categories in the sentiment distribution
+    n_categories = len(sentiment_dist)
+    
+    # Generate a color gradient
+    colors = get_color_gradient(start_color, end_color, n_categories)
     
     fig = go.Figure(data=[go.Pie(
         labels=list(sentiment_dist.keys()),
@@ -282,11 +300,9 @@ def create_sentiment_chart(sentiment_dist):
             xanchor="center",
             x=0.5
         ),
-        margin=dict(t=50, b=50, l=50, r=50),
-        title="Sentiment Distribution"
+        margin=dict(t=50, b=50, l=50, r=50)
     )
     return fig
-
 
 
 def create_topics_chart(topics):
