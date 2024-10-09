@@ -273,8 +273,8 @@ def get_color_gradient(c1, c2, n):
 
 def create_sentiment_chart(sentiment_dist):
     # Define start and end colors for the gradient
-    start_color = '#ff6361'
-    end_color = '#bc5090'
+    start_color = '#FCFAFA'
+    end_color = '#6E8387'
     
     # Get the number of categories in the sentiment distribution
     n_categories = len(sentiment_dist)
