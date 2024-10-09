@@ -254,16 +254,28 @@ def summarize_with_openai(summary):
 
     return analyzer.LLMClient(prompt)
 
+def hex_to_rgb(hex_color):
+    """Convert hex color to RGB."""
+    return tuple(int(hex_color[i:i+2], 16) for i in (1, 3, 5))
+
 def create_color_gradient(colors, n_colors):
     """Create a gradient of colors."""
-    return [
-        f'rgb({int(r)},{int(g)},{int(b)})'
-        for r, g, b in [
-            np.interp(i, [0, n_colors-1], [int(c[1:3], 16), int(e[1:3], 16)])
-            for c, e in zip(colors[:-1], colors[1:])
-            for i in range(n_colors // (len(colors) - 1))
-        ]
-    ]
+    if n_colors < 2:
+        return colors * n_colors
+    
+    rgb_colors = [hex_to_rgb(color) for color in colors]
+    indices = np.linspace(0, len(rgb_colors) - 1, n_colors)
+    
+    gradient = []
+    for idx in indices:
+        i, f = int(idx), idx % 1
+        if i == len(rgb_colors) - 1:
+            rgb = rgb_colors[-1]
+        else:
+            rgb = tuple(int((1-f) * rgb_colors[i][j] + f * rgb_colors[i+1][j]) for j in range(3))
+        gradient.append(f'rgb{rgb}')
+    
+    return gradient
 
 def create_sentiment_chart(sentiment_dist):
     colors = ['#ff6361', '#ffa600', '#bc5090']
