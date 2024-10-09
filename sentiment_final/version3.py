@@ -10,6 +10,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import concurrent.futures
 from wordcloud import WordCloud
+import plotly.colors as pc
 
 logging.basicConfig(level=logging.INFO)
 
