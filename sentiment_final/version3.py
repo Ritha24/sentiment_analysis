@@ -254,7 +254,7 @@ def summarize_with_openai(summary):
     return analyzer.LLMClient(prompt)
 
 def create_sentiment_chart(sentiment_dist):
-    colors = ['#636EFA', '#00CC96', '#EF553B', '#AB63FA', '#FFA15A']
+    colors = ['#3498db', '#f1c40f', '#e74c3c', '#2ecc71', '#9b59b6']  # New colors
     
     fig = go.Figure(data=[go.Pie(
         labels=list(sentiment_dist.keys()),
@@ -817,7 +817,7 @@ def main():
                         "area": "Limited availability for spa services",
                         "frequency": 3,
                         "improvement_suggestion": "Expand availability of spa services to meet customer demand"
-                    },
+                    }
                 ],
                 "insights_for_improvement": [
                     {
