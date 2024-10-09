@@ -924,7 +924,7 @@ def main():
                 st.subheader("Top Topics")
                 if 'top_topics' in saved_data:
                     topics_df = pd.DataFrame(saved_data['top_topics'])
-                    topics_df.index = topics_df.index + 1
+                    # topics_df.index = topics_df.index + 1
                     st.dataframe(topics_df)
                 else:
                     st.warning("Topics data not found in saved analysis.")
