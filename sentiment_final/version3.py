@@ -264,7 +264,7 @@ def create_sentiment_chart(sentiment_dist):
         marker=dict(colors=gradient_colors, line=dict(color='#FFFFFF', width=2)),
         hoverinfo='label+percent',
         textinfo='value+percent',
-        textfont=dict(size=14, color='black'),  
+        textfont=dict(size=14, color='white'),  
         domain=dict(x=[0, 0.5])
     )])
 
