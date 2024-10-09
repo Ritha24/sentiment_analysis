@@ -254,7 +254,7 @@ def summarize_with_openai(summary):
     return analyzer.LLMClient(prompt)
 
 def create_sentiment_chart(sentiment_dist):
-    colors = ['#e6f2ff', '#f5f5f5', '#fff5f5', '#e6ffe6', '#fff5f5']  # Lighter colors
+    colors = ['#3498db', '#f1c40f', '#e74c3c', '#2ecc71', '#9b59b6']  # New colors
     
     fig = go.Figure(data=[go.Pie(
         labels=list(sentiment_dist.keys()),
