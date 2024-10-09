@@ -10,6 +10,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import concurrent.futures
 from wordcloud import WordCloud
+import matplotlib.colors as mcolors
 
 logging.basicConfig(level=logging.INFO)
 
@@ -254,8 +255,15 @@ def summarize_with_openai(summary):
 
     return analyzer.LLMClient(prompt)
 
+def get_color_gradient(color1, color2, n):
+    return [mcolors.to_hex(mcolors.LinearSegmentedColormap.from_list("", [color1, color2])(i)) for i in range(n)]
+
 def create_sentiment_chart(sentiment_dist):
-    colors = ['#ff6361', '#ffa600', '#bc5090']
+    color1 = '#FB575D'
+    color2 = '#15251B'
+    n_colors = len(sentiment_dist)
+    colors = get_color_gradient(color1, color2, n_colors)
+    
     fig = go.Figure(data=[go.Pie(
         labels=list(sentiment_dist.keys()),
         values=list(sentiment_dist.values()),
@@ -265,6 +273,7 @@ def create_sentiment_chart(sentiment_dist):
         textfont=dict(size=14, color='black'),  
         domain=dict(x=[0, 0.5])
     )])
+    
     fig.update_layout(
         legend=dict(
             orientation="h",
@@ -273,9 +282,11 @@ def create_sentiment_chart(sentiment_dist):
             xanchor="center",
             x=0.5
         ),
-        margin=dict(t=50, b=50, l=50, r=50)
+        margin=dict(t=50, b=50, l=50, r=50),
+        title="Sentiment Distribution"
     )
     return fig
+
 
 
 def create_topics_chart(topics):
