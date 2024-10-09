@@ -254,17 +254,32 @@ def summarize_with_openai(summary):
 
     return analyzer.LLMClient(prompt)
 
+def create_color_gradient(colors, n_colors):
+    """Create a gradient of colors."""
+    return [
+        f'rgb({int(r)},{int(g)},{int(b)})'
+        for r, g, b in [
+            np.interp(i, [0, n_colors-1], [int(c[1:3], 16), int(e[1:3], 16)])
+            for c, e in zip(colors[:-1], colors[1:])
+            for i in range(n_colors // (len(colors) - 1))
+        ]
+    ]
+
 def create_sentiment_chart(sentiment_dist):
     colors = ['#ff6361', '#ffa600', '#bc5090']
+    n_colors = len(sentiment_dist)
+    color_scale = create_color_gradient(colors, n_colors)
+
     fig = go.Figure(data=[go.Pie(
         labels=list(sentiment_dist.keys()),
         values=list(sentiment_dist.values()),
-        marker=dict(colors=colors, line=dict(color='#FFFFFF', width=2)),
+        marker=dict(colors=color_scale, line=dict(color='#FFFFFF', width=2)),
         hoverinfo='label+percent',
         textinfo='value+percent',
-        textfont=dict(size=14, color='black'),  
+        textfont=dict(size=14, color='black'),
         domain=dict(x=[0, 0.5])
     )])
+
     fig.update_layout(
         legend=dict(
             orientation="h",
@@ -275,8 +290,8 @@ def create_sentiment_chart(sentiment_dist):
         ),
         margin=dict(t=50, b=50, l=50, r=50)
     )
+    
     return fig
-
 
 def create_topics_chart(topics):
     df = pd.DataFrame(topics)
