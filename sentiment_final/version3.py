@@ -253,31 +253,31 @@ def summarize_with_openai(summary):
     """
 
     return analyzer.LLMClient(prompt)
-def create_sentiment_chart(sentiment_dist):
-    # Define solid colors for each slice
-    colors = ['#0066CC', '#FF3333', '#66CCFF']  # Dark blue, Red, Light blue
 
+def create_sentiment_chart(sentiment_dist):
+    colors = ['#ff6361', '#ffa600', '#bc5090']
     fig = go.Figure(data=[go.Pie(
         labels=list(sentiment_dist.keys()),
         values=list(sentiment_dist.values()),
         marker=dict(colors=colors, line=dict(color='#FFFFFF', width=2)),
+        hoverinfo='label+percent',
         textinfo='value+percent',
-        textposition='inside',
-        insidetextorientation='radial',
-        textfont=dict(size=14, color='white'),
-        hole=0.4
+        textfont=dict(size=14, color='black'),  
+        domain=dict(x=[0, 0.5])
     )])
-
     fig.update_layout(
-        title=dict(text='Pie Infographic', x=0.5, y=0.95),
-        annotations=[dict(text='PIE', x=0.5, y=0.5, font_size=20, showarrow=False)],
-        showlegend=False,
-        width=600,
-        height=600,
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=-0.3,
+            xanchor="center",
+            x=0.5
+        ),
         margin=dict(t=50, b=50, l=50, r=50)
     )
-
     return fig
+
+
 def create_topics_chart(topics):
     df = pd.DataFrame(topics)
     fig = px.scatter(df, x='topic', y='relevance_score', size='relevance_score', 
