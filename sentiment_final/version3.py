@@ -254,44 +254,37 @@ def summarize_with_openai(summary):
 
     return analyzer.LLMClient(prompt)
 
-def hex_to_rgb(hex_color):
-    """Convert hex color to RGB."""
-    return tuple(int(hex_color[i:i+2], 16) for i in (1, 3, 5))
-
-def create_color_gradient(colors, n_colors):
-    """Create a gradient of colors."""
-    if n_colors < 2:
-        return colors * n_colors
-    
-    rgb_colors = [hex_to_rgb(color) for color in colors]
-    indices = np.linspace(0, len(rgb_colors) - 1, n_colors)
-    
-    gradient = []
-    for idx in indices:
-        i, f = int(idx), idx % 1
-        if i == len(rgb_colors) - 1:
-            rgb = rgb_colors[-1]
-        else:
-            rgb = tuple(int((1-f) * rgb_colors[i][j] + f * rgb_colors[i+1][j]) for j in range(3))
-        gradient.append(f'rgb{rgb}')
-    
-    return gradient
-
 def create_sentiment_chart(sentiment_dist):
-    colors = ['#ff6361', '#ffa600', '#bc5090']
-    n_colors = len(sentiment_dist)
-    color_scale = create_color_gradient(colors, n_colors)
-
+    colors = [
+        'rgb(255, 99, 97)',  # red
+        'rgb(255, 165, 0)',  # orange
+        'rgb(188, 80, 144)'  # purple
+    ]
+    gradient_colors = [
+        'rgba(255, 99, 97, 0.5)',  # red
+        'rgba(255, 165, 0, 0.5)',  # orange
+        'rgba(188, 80, 144, 0.5)'  # purple
+    ]
     fig = go.Figure(data=[go.Pie(
         labels=list(sentiment_dist.keys()),
         values=list(sentiment_dist.values()),
-        marker=dict(colors=color_scale, line=dict(color='#FFFFFF', width=2)),
+        marker=dict(
+            colors=colors,
+            line=dict(color='#FFFFFF', width=2),
+            gradient=dict(
+                type='radial',
+                color=gradient_colors,
+                radialaxis=dict(
+                    visible=True,
+                    range=[0, 1]
+                )
+            )
+        ),
         hoverinfo='label+percent',
         textinfo='value+percent',
         textfont=dict(size=14, color='black'),
         domain=dict(x=[0, 0.5])
     )])
-
     fig.update_layout(
         legend=dict(
             orientation="h",
@@ -302,7 +295,6 @@ def create_sentiment_chart(sentiment_dist):
         ),
         margin=dict(t=50, b=50, l=50, r=50)
     )
-    
     return fig
 
 def create_topics_chart(topics):
