@@ -6,3 +6,4 @@ logging
 openai
 plotly
 openpyxl
+wordcloud

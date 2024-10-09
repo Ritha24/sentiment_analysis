@@ -9,6 +9,7 @@ from openai import OpenAI
 import plotly.express as px
 import plotly.graph_objects as go
 import concurrent.futures
+from wordcloud import WordCloud
 
 logging.basicConfig(level=logging.INFO)
 
@@ -254,15 +255,15 @@ def summarize_with_openai(summary):
     return analyzer.LLMClient(prompt)
 
 def create_sentiment_chart(sentiment_dist):
-    colors = ['#3498db', '#f1c40f', '#e74c3c', '#2ecc71', '#9b59b6']  # New colors
+    colors = ['#2ecc71', '#f1c40f', '#e74c3c']
     fig = go.Figure(data=[go.Pie(
         labels=list(sentiment_dist.keys()),
         values=list(sentiment_dist.values()),
-        marker=dict(colors='#FFFFFF', line=dict(color='#FFFFFF', width=2)),
+        marker=dict(colors=colors, line=dict(color='#FFFFFF', width=2)),
         hoverinfo='label+percent',
         textinfo='value+percent',
-        textfont_size=14,
-        domain=dict(x=[0, 0.5]) 
+        textfont=dict(size=14, color='black'),  
+        domain=dict(x=[0, 0.5])
     )])
     fig.update_layout(
         legend=dict(
@@ -276,25 +277,6 @@ def create_sentiment_chart(sentiment_dist):
     )
     return fig
 
-def create_category_chart(categories_data):
-    categories = []
-    percentages = []
-    
-    if isinstance(categories_data, dict):
-        
-        categories_data = [{"category": k, "percentage": v} for k, v in categories_data.items()]
-    
-    for category in categories_data:
-        if isinstance(category, dict):
-            categories.append(category.get('category', ''))
-            percentages.append(category.get('percentage', 0))
-        else:
-            categories.append(category)
-            percentages.append(categories_data[category])
-    
-    df = pd.DataFrame({'Category': categories, 'Percentage': percentages})
-    fig = px.bar(df, x='Category', y='Percentage', title="Top Categories")
-    return fig
 
 def create_topics_chart(topics):
     df = pd.DataFrame(topics)
@@ -302,45 +284,67 @@ def create_topics_chart(topics):
                      hover_data=['related_keywords'], title="Topic Relevance")
     return fig
 
-def create_improved_nested_pie_chart(data):
-    categories = []
-    keywords = []
-    category_sizes = []
-    keyword_sizes = []
-   
+def create_category_bar_and_keyword_cloud(data):
+    # Prepare data for category bar chart
+    categories = [category['category'] for category in data['top_categories_and_keywords']]
+    percentages = [category['percentage'] for category in data['top_categories_and_keywords']]
+
+    # Create horizontal bar chart for categories
+    fig_bar = go.Figure(go.Bar(
+        y=categories,
+        x=percentages,
+        orientation='h',
+        marker_color='#519DE9',
+        text=[f"{p:.2f}%" for p in percentages],
+        textposition='outside'
+    ))
+
+    fig_bar.update_layout(
+        title="Top Categories",
+        xaxis_title="Percentage",
+        yaxis_title="Category",
+        height=400,
+        width=600
+    )
+
+    # Prepare data for keyword word cloud
+    keyword_freq = {}
     for category in data['top_categories_and_keywords']:
-        categories.append(category['category'])
-        category_sizes.append(category['percentage'])
-       
         for keyword in category['top_keywords']:
-            keywords.append(f"{keyword['keyword']} ({keyword['occurrences']})")
-            keyword_sizes.append(keyword['occurrences'])
-   
-    fig, ax = plt.subplots(figsize=(15, 13))
-   
-    category_colors = plt.cm.Set3(np.linspace(0, 1, len(categories)))
-    outer_colors = plt.cm.Pastel1(np.linspace(0, 1, len(keyword_sizes)))
-   
-    ax.pie(keyword_sizes, labels=None, colors=outer_colors, radius=1,
-           wedgeprops=dict(width=0.3, edgecolor='white'),
-           labeldistance=1.05)
-   
-    ax.pie(category_sizes, labels=categories, colors=category_colors, radius=0.7,
-           wedgeprops=dict(width=0.4, edgecolor='white'),
-           labeldistance=0.6, autopct='%1.1f%%', pctdistance=0.75)
-   
-    center_circle = plt.Circle((0, 0), 0.3, fc='white')
-    ax.add_artist(center_circle)
-    
-    # Adding legend with colors denoting names
-    ax.legend(labels=keywords, loc='center left', bbox_to_anchor=(1, 0.5))
- 
-    plt.axis('equal')
-    plt.tight_layout()
-    return fig
+            keyword_freq[keyword['keyword']] = keyword['occurrences']
+
+    # Create word cloud
+    wordcloud = WordCloud(width=600, height=400, background_color='white').generate_from_frequencies(keyword_freq)
+
+    # Create matplotlib figure for word cloud
+    fig_cloud, ax = plt.subplots(figsize=(10, 6))
+    ax.imshow(wordcloud, interpolation='bilinear')
+    ax.axis('off')
+    plt.title("Keyword Cloud")
+
+    return fig_bar, fig_cloud
 
 def main():
-    st.set_page_config(layout="wide", page_title="Transcript Analysis")
+    st.markdown(
+    """
+    <style>
+    .logo-img {
+        display: block;
+        width: 30%;
+        max-width: 100px;
+        max-height: 165px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+    )
+
+    st.markdown(
+        """
+        <img class="logo-img" src="https://i.ibb.co/ynZJk44/Canyon-Ranch-Logo.jpg">
+        """,
+        unsafe_allow_html=True
+    )
     st.title("Transcript Analysis Dashboard")
 
     tab1, tab2 = st.tabs(["Dashboard", "Upload and Analyze"])
@@ -373,56 +377,88 @@ def main():
                 st.plotly_chart(sentiment_chart)
 
                 st.subheader("Top Categories and Keywords")
-                for category in openai_data['top_categories_and_keywords']:
-                    st.write(f"**{category['category']}** ({category['percentage']:.2f}%)")
-                    keywords_df = pd.DataFrame(category['top_keywords'])
-                    keywords_df.index = keywords_df.index + 1
-                    st.dataframe(keywords_df)
-
-                st.subheader("Top Topics")
-                topics_df = pd.DataFrame(openai_data['top_topics'])
-                topics_df.index = topics_df.index + 1
-                st.dataframe(topics_df)    
+                if 'top_categories_and_keywords' in openai_data:
+                    col1, col2 = st.columns(2)
+                    for i, category in enumerate(openai_data['top_categories_and_keywords']):
+                        if i % 2 == 0:
+                            with col1:
+                                st.write(f"**{category['category']}** ({category['percentage']:.2f}%)")
+                                keywords_df = pd.DataFrame(category['top_keywords'])
+                                keywords_df.index = keywords_df.index + 1
+                                st.dataframe(keywords_df)
+                        else:
+                            with col2:
+                                st.write(f"**{category['category']}** ({category['percentage']:.2f}%)")
+                                keywords_df = pd.DataFrame(category['top_keywords'])
+                                keywords_df.index = keywords_df.index + 1
+                                st.dataframe(keywords_df)
+                else:
+                    st.warning("Categories and keywords data not found in saved analysis.")
+                
+                st.subheader("Categories and Keywords Distribution")
+                fig_bar, fig_cloud = create_category_bar_and_keyword_cloud(openai_data)
 
                 col1, col2 = st.columns(2)
                 with col1:
-                    st.subheader("Top Strength Areas")
-                    strengths_df = pd.DataFrame(openai_data['top_strength_areas'])
-                    strengths_df.index = strengths_df.index + 1
-                    st.dataframe(strengths_df)
+                    st.plotly_chart(fig_bar, use_container_width=True)
+                with col2:
+                    st.pyplot(fig_cloud)
 
-                    if not strengths_df.empty:
-                        strength_chart = px.bar(strengths_df, x='area', y='frequency', title="Top Strength Areas")
-                        st.plotly_chart(strength_chart, use_container_width=True)
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.subheader("Top Topics")
+                    if 'top_topics' in openai_data:
+                        topics_df = pd.DataFrame(openai_data['top_topics'])
+                        topics_df.index = topics_df.index + 1
+                        st.dataframe(topics_df)
+                    else:
+                        st.warning("Topics data not found in saved analysis.")
+
+                with col2:
+                    if 'top_topics' in openai_data:
+                        topics_chart = create_topics_chart(openai_data['top_topics'])
+                        st.plotly_chart(topics_chart)
+                    else:
+                        st.warning("Topic data not found in saved analysis.")
+
+                col1, col2 = st.columns(2)
+
+                with col1:
+                    st.subheader("Top Strength Areas")
+                    if 'top_strength_areas' in openai_data:
+                        strengths_df = pd.DataFrame(openai_data['top_strength_areas'])
+                        strengths_df.index = strengths_df.index + 1
+                        st.dataframe(strengths_df)
+                    else:
+                        st.warning("Strength areas data not found in saved analysis.")
                 
                 with col2:
+                    if 'top_strength_areas' in openai_data and not strengths_df.empty:
+                        strength_chart = px.bar(strengths_df, x='area', y='frequency', title="Top Strength Areas")
+                        st.plotly_chart(strength_chart, use_container_width=True)
+
+                with col1:
                     st.subheader("Top Weak Areas")
-                    weaknesses_df = pd.DataFrame(openai_data['top_weak_areas'])
-                    weaknesses_df.index = weaknesses_df.index + 1
-                    st.dataframe(weaknesses_df)
-                    
-                    if not weaknesses_df.empty:
+                    if 'top_weak_areas' in openai_data:
+                        weaknesses_df = pd.DataFrame(openai_data['top_weak_areas'])
+                        weaknesses_df.index = weaknesses_df.index + 1
+                        st.dataframe(weaknesses_df)
+                    else:
+                        st.warning("Weak areas data not found in saved analysis.")
+                
+                with col2:
+                    if 'top_weak_areas' in openai_data and not weaknesses_df.empty:
                         weak_chart = px.bar(weaknesses_df, x='area', y='frequency', title="Top Weak Areas")
                         st.plotly_chart(weak_chart, use_container_width=True)
 
                 st.subheader("Insights for Improvement")
-                insights_df = pd.DataFrame(openai_data['insights_for_improvement'])
-                insights_df.index = insights_df.index + 1
-                st.dataframe(insights_df)
+                if 'insights_for_improvement' in openai_data:
+                    insights_df = pd.DataFrame(openai_data['insights_for_improvement'])
+                    insights_df.index = insights_df.index + 1
+                    st.dataframe(insights_df)
+                else:
+                    st.warning("Insights for improvement data not found in saved analysis.")
 
-                col1, col2 = st.columns(2)
-                with col1:
-                    st.subheader("Top Categories")
-                    category_chart = create_category_chart(summary_json['category'])
-                    st.plotly_chart(category_chart)
-                with col2:
-                    st.subheader("Topic Relevance")
-                    topics_chart = create_topics_chart(openai_data['top_topics'])
-                    st.plotly_chart(topics_chart)
-
-                st.subheader("Categories and Keywords Distribution")
-                fig = create_improved_nested_pie_chart(openai_data)
-                st.pyplot(fig)
 
     with tab1:
         st.header("Dashboard")
@@ -854,51 +890,81 @@ def main():
             st.subheader("Sentiment Distribution")
             sentiment_chart = create_sentiment_chart(saved_data['sentiment_distribution'])
             st.plotly_chart(sentiment_chart)
-
+          
             st.subheader("Top Categories and Keywords")
             if 'top_categories_and_keywords' in saved_data:
-                for category in saved_data['top_categories_and_keywords']:
-                    st.write(f"**{category['category']}** ({category['percentage']:.2f}%)")
-                    keywords_df = pd.DataFrame(category['top_keywords'])
-                    keywords_df.index = keywords_df.index + 1
-                    st.dataframe(keywords_df)
+                col1, col2 = st.columns(2)
+                for i, category in enumerate(saved_data['top_categories_and_keywords']):
+                    if i % 2 == 0:
+                        with col1:
+                            st.write(f"**{category['category']}** ({category['percentage']:.2f}%)")
+                            keywords_df = pd.DataFrame(category['top_keywords'])
+                            keywords_df.index = keywords_df.index + 1
+                            st.dataframe(keywords_df)
+                    else:
+                        with col2:
+                            st.write(f"**{category['category']}** ({category['percentage']:.2f}%)")
+                            keywords_df = pd.DataFrame(category['top_keywords'])
+                            keywords_df.index = keywords_df.index + 1
+                            st.dataframe(keywords_df)
             else:
                 st.warning("Categories and keywords data not found in saved analysis.")
 
-            st.subheader("Top Topics")
-            if 'top_topics' in saved_data:
-                topics_df = pd.DataFrame(saved_data['top_topics'])
-                topics_df.index = topics_df.index + 1
-                st.dataframe(topics_df)
-            else:
-                st.warning("Topics data not found in saved analysis.")
+            st.subheader("Categories and Keywords Distribution")
+            fig_bar, fig_cloud = create_category_bar_and_keyword_cloud(saved_data)
 
             col1, col2 = st.columns(2)
+            with col1:
+                st.plotly_chart(fig_bar, use_container_width=True)
+            with col2:
+                st.pyplot(fig_cloud)
+
+            col1, col2 = st.columns(2)
+            with col1:
+                st.subheader("Top Topics")
+                if 'top_topics' in saved_data:
+                    topics_df = pd.DataFrame(saved_data['top_topics'])
+                    topics_df.index = topics_df.index + 1
+                    st.dataframe(topics_df)
+                else:
+                    st.warning("Topics data not found in saved analysis.")
+
+            with col2:
+                if 'top_topics' in saved_data:
+                    topics_chart = create_topics_chart(saved_data['top_topics'])
+                    st.plotly_chart(topics_chart)
+                else:
+                    st.warning("Topic data not found in saved analysis.")
+
+            col1, col2 = st.columns(2)
+
             with col1:
                 st.subheader("Top Strength Areas")
                 if 'top_strength_areas' in saved_data:
                     strengths_df = pd.DataFrame(saved_data['top_strength_areas'])
                     strengths_df.index = strengths_df.index + 1
                     st.dataframe(strengths_df)
-
-                    if not strengths_df.empty:
-                        strength_chart = px.bar(strengths_df, x='area', y='frequency', title="Top Strength Areas")
-                        st.plotly_chart(strength_chart, use_container_width=True)
                 else:
                     st.warning("Strength areas data not found in saved analysis.")
             
             with col2:
+                if 'top_strength_areas' in saved_data and not strengths_df.empty:
+                    strength_chart = px.bar(strengths_df, x='area', y='frequency', title="Top Strength Areas")
+                    st.plotly_chart(strength_chart, use_container_width=True)
+
+            with col1:
                 st.subheader("Top Weak Areas")
                 if 'top_weak_areas' in saved_data:
                     weaknesses_df = pd.DataFrame(saved_data['top_weak_areas'])
                     weaknesses_df.index = weaknesses_df.index + 1
                     st.dataframe(weaknesses_df)
-
-                    if not weaknesses_df.empty:
-                        weak_chart = px.bar(weaknesses_df, x='area', y='frequency', title="Top Weak Areas")
-                        st.plotly_chart(weak_chart, use_container_width=True)
                 else:
                     st.warning("Weak areas data not found in saved analysis.")
+            
+            with col2:
+                if 'top_weak_areas' in saved_data and not weaknesses_df.empty:
+                    weak_chart = px.bar(weaknesses_df, x='area', y='frequency', title="Top Weak Areas")
+                    st.plotly_chart(weak_chart, use_container_width=True)
 
             st.subheader("Insights for Improvement")
             if 'insights_for_improvement' in saved_data:
@@ -907,26 +973,6 @@ def main():
                 st.dataframe(insights_df)
             else:
                 st.warning("Insights for improvement data not found in saved analysis.")
-
-            col1, col2 = st.columns(2)
-            with col1:
-                st.subheader("Top Categories")
-                if 'top_categories_and_keywords' in saved_data:
-                    category_chart = create_category_chart(saved_data['top_categories_and_keywords'])
-                    st.plotly_chart(category_chart)
-                else:
-                    st.warning("Category data not found in saved analysis.")
-            with col2:
-                st.subheader("Topic Relevance")
-                if 'top_topics' in saved_data:
-                    topics_chart = create_topics_chart(saved_data['top_topics'])
-                    st.plotly_chart(topics_chart)
-                else:
-                    st.warning("Topic data not found in saved analysis.")
-
-            st.subheader("Categories and Keywords Distribution")
-            fig = create_improved_nested_pie_chart(saved_data)
-            st.pyplot(fig)
 
         except FileNotFoundError:
             st.warning("No saved analysis found. Please upload and analyze transcripts first.")
