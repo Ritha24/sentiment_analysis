@@ -258,7 +258,7 @@ def create_sentiment_chart(sentiment_dist):
     fig = go.Figure(data=[go.Pie(
         labels=list(sentiment_dist.keys()),
         values=list(sentiment_dist.values()),
-        marker=dict(colors=colors, line=dict(color='#FFFFFF', width=2), color='#FFFFFF'),
+        marker=dict(colors=colors, line=dict(color='#FFFFFF', width=2)),
         hoverinfo='label+percent',
         textinfo='value+percent',
         textfont_size=14,
