@@ -255,28 +255,19 @@ def summarize_with_openai(summary):
     return analyzer.LLMClient(prompt)
 
 def create_sentiment_chart(sentiment_dist):
-    colors = [
-        'rgb(255, 99, 97)',  # red
-        'rgb(255, 165, 0)',  # orange
-        'rgb(188, 80, 144)'  # purple
-    ]
-    gradient_colors = [
-        'rgba(255, 99, 97, 0.5)',  # red
-        'rgba(255, 165, 0, 0.5)',  # orange
-        'rgba(188, 80, 144, 0.5)'  # purple
-    ]
+    # Define a list of gradient colors for each slice (you can fine-tune the colors for a more subtle gradient effect)
+    gradient_colors = ['#ff6361', '#ff8356', '#ffa600', '#ffb445', '#bc5090', '#d95f98']
+
     fig = go.Figure(data=[go.Pie(
         labels=list(sentiment_dist.keys()),
         values=list(sentiment_dist.values()),
-        marker=dict(
-        colors=colors,
-        line=dict(color='#FFFFFF', width=2)
-    ),
+        marker=dict(colors=gradient_colors, line=dict(color='#FFFFFF', width=2)),
         hoverinfo='label+percent',
         textinfo='value+percent',
-        textfont=dict(size=14, color='black'),
+        textfont=dict(size=14, color='black'),  
         domain=dict(x=[0, 0.5])
     )])
+
     fig.update_layout(
         legend=dict(
             orientation="h",
@@ -287,6 +278,7 @@ def create_sentiment_chart(sentiment_dist):
         ),
         margin=dict(t=50, b=50, l=50, r=50)
     )
+
     return fig
 
 def create_topics_chart(topics):
