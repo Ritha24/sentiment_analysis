@@ -272,16 +272,7 @@ def get_color_gradient(c1, c2, n):
     return ["#" + "".join([format(int(round(val*255)), "02x") for val in item]) for item in rgb_colors]
 
 def create_sentiment_chart(sentiment_dist):
-    # Define start and end colors for the gradient
-    start_color = '#FCFAFA'
-    end_color = '#6E8387'
-    
-    # Get the number of categories in the sentiment distribution
-    n_categories = len(sentiment_dist)
-    
-    # Generate a color gradient
-    colors = get_color_gradient(start_color, end_color, n_categories)
-    
+    colors = ['#ff6361', '#ffa600', '#bc5090']
     fig = go.Figure(data=[go.Pie(
         labels=list(sentiment_dist.keys()),
         values=list(sentiment_dist.values()),
@@ -291,7 +282,6 @@ def create_sentiment_chart(sentiment_dist):
         textfont=dict(size=14, color='black'),  
         domain=dict(x=[0, 0.5])
     )])
-    
     fig.update_layout(
         legend=dict(
             orientation="h",
@@ -312,11 +302,10 @@ def create_topics_chart(topics):
     return fig
 
 def create_category_bar_and_keyword_cloud(data):
-    # Prepare data for category bar chart
+    
     categories = [category['category'] for category in data['top_categories_and_keywords']]
     percentages = [category['percentage'] for category in data['top_categories_and_keywords']]
 
-    # Create horizontal bar chart for categories
     fig_bar = go.Figure(go.Bar(
         y=categories,
         x=percentages,
