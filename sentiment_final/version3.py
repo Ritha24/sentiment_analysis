@@ -272,7 +272,7 @@ def get_color_gradient(c1, c2, n):
     return ["#" + "".join([format(int(round(val*255)), "02x") for val in item]) for item in rgb_colors]
 
 def create_sentiment_chart(sentiment_dist):
-    colors = ['#ff6361', '#ffa600', '#bc5090']
+    colors = ['#58508d', '#ffa600', '#bc5090']
     fig = go.Figure(data=[go.Pie(
         labels=list(sentiment_dist.keys()),
         values=list(sentiment_dist.values()),
