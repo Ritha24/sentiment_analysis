@@ -392,6 +392,15 @@ def main():
                 sentiment_chart = create_sentiment_chart(openai_data['sentiment_distribution'])
                 st.plotly_chart(sentiment_chart)
 
+                st.subheader("Categories and Keywords Distribution")
+                fig_bar, fig_cloud = create_category_bar_and_keyword_cloud(openai_data)
+
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.plotly_chart(fig_bar, use_container_width=True)
+                with col2:
+                    st.pyplot(fig_cloud)
+
                 st.subheader("Top Categories and Keywords")
                 if 'top_categories_and_keywords' in openai_data:
                     col1, col2 = st.columns(2)
@@ -410,15 +419,6 @@ def main():
                                 st.dataframe(keywords_df)
                 else:
                     st.warning("Categories and keywords data not found in saved analysis.")
-                
-                st.subheader("Categories and Keywords Distribution")
-                fig_bar, fig_cloud = create_category_bar_and_keyword_cloud(openai_data)
-
-                col1, col2 = st.columns(2)
-                with col1:
-                    st.plotly_chart(fig_bar, use_container_width=True)
-                with col2:
-                    st.pyplot(fig_cloud)
 
                 col1, col2 = st.columns(2)
                 with col1:
@@ -906,6 +906,15 @@ def main():
             st.subheader("Sentiment Distribution")
             sentiment_chart = create_sentiment_chart(saved_data['sentiment_distribution'])
             st.plotly_chart(sentiment_chart)
+
+            st.subheader("Categories and Keywords Distribution")
+            fig_bar, fig_cloud = create_category_bar_and_keyword_cloud(saved_data)
+
+            col1, col2 = st.columns(2)
+            with col1:
+                st.plotly_chart(fig_bar, use_container_width=True)
+            with col2:
+                st.pyplot(fig_cloud)
           
             st.subheader("Top Categories and Keywords")
             if 'top_categories_and_keywords' in saved_data:
@@ -925,15 +934,6 @@ def main():
                             st.dataframe(keywords_df)
             else:
                 st.warning("Categories and keywords data not found in saved analysis.")
-
-            st.subheader("Categories and Keywords Distribution")
-            fig_bar, fig_cloud = create_category_bar_and_keyword_cloud(saved_data)
-
-            col1, col2 = st.columns(2)
-            with col1:
-                st.plotly_chart(fig_bar, use_container_width=True)
-            with col2:
-                st.pyplot(fig_cloud)
 
             col1, col2 = st.columns(2)
             with col1:
