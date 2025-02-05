@@ -279,14 +279,36 @@ def create_sentiment_chart(sentiment_dist):
 
 
 def create_topics_chart(topics):
+    # Create DataFrame
     df = pd.DataFrame(topics)
-    df = df.sort_values('relevance_score')
-
-    fig = px.scatter( df, x='topic', y='relevance_score', size='relevance_score', hover_data=['related_keywords'], title="Topic Relevance")
-
-    fig.update_layout(xaxis_tickangle=-45, height=600)
+    
+    # Create scatter plot
+    fig = px.scatter(
+        df,
+        x='topic',
+        y='relevance_score',
+        size='relevance_score',
+        hover_data=['related_keywords'],
+        title="Topic Relevance"
+    )
+    
+    # Modify x-axis label orientation
+    fig.update_xaxes(
+        tickangle= -45,  
+        tickmode='linear',
+        ticktext=df['topic'],  # Use topic names as labels
+        tickfont=dict(size=10),  # Adjust font size if needed
+        anchor='free',  # Allow labels to position freely
+        position=0  # Position at bottom
+    )
+    
+    # Update layout to prevent label cutoff
+    fig.update_layout(
+        height=600  
+    )
     
     return fig
+
 def create_category_bar_and_keyword_cloud(data):
     
     categories = [category['category'] for category in data['top_categories_and_keywords']]
@@ -432,24 +454,26 @@ def main():
                 
                 with col2:
                     if 'top_strength_areas' in openai_data and not strengths_df.empty:
-                        strengths_df = strengths_df.sort_values('frequency')
-                        
-                        # Create the bar chart with sorted data
                         strength_chart = px.bar(
-                            strengths_df, 
-                            x='area', 
-                            y='frequency', 
+                            strengths_df,
+                            x='area',
+                            y='frequency',
                             title="Top Strength Areas"
                         )
                         
-                        # Update layout for better readability
-                        strength_chart.update_layout(
-                            xaxis_tickangle=-45,  # Angle the x-axis labels
-                            height=500,  # Adjust height to accommodate labels
-                            margin=dict(b=100)  # Add bottom margin for rotated labels
+                        # Modify x-axis label orientation
+                        strength_chart.update_xaxes(
+                            tickangle= -45,  # Angle of the labels
+                            tickmode='linear',  # Force all labels to show
+                            tickfont=dict(size=10)  # Adjust font size if needed
                         )
                         
-                        # Display the chart
+                        # Update layout to prevent label cutoff
+                        strength_chart.update_layout(
+                            height=500  # Adjust overall height to accommodate labels
+                        )
+                        
+                        # Display the chart in Streamlit
                         st.plotly_chart(strength_chart, use_container_width=True)
 
                 with col1:
@@ -463,25 +487,27 @@ def main():
                 
                 with col2:
                     if 'top_weak_areas' in openai_data and not weaknesses_df.empty:
-                        # Sort the DataFrame by frequency in ascending order
-                        weaknesses_df = weaknesses_df.sort_values('frequency')
-                        
-                        # Create the bar chart with sorted data
+                        # Create bar chart
                         weak_chart = px.bar(
-                            weaknesses_df, 
-                            x='area', 
-                            y='frequency', 
+                            weaknesses_df,
+                            x='area',
+                            y='frequency',
                             title="Top Weak Areas"
                         )
                         
-                        # Update layout for better readability
-                        weak_chart.update_layout(
-                            xaxis_tickangle=-45,  # Angle the x-axis labels
-                            height=500,  # Adjust height to accommodate labels
-                            margin=dict(b=100)  # Add bottom margin for rotated labels
+                        # Modify x-axis label orientation
+                        weak_chart.update_xaxes(
+                            tickangle= -45,  # Angle of the labels
+                            tickmode='linear',  # Force all labels to show
+                            tickfont=dict(size=10)  # Adjust font size if needed
                         )
                         
-                        # Display the chart
+                        # Update layout to prevent label cutoff
+                        weak_chart.update_layout(
+                            height=500  # Adjust overall height to accommodate labels
+                        )
+                        
+                        # Display the chart in Streamlit
                         st.plotly_chart(weak_chart, use_container_width=True)
 
                 st.subheader("Insights for Improvement")
@@ -982,24 +1008,26 @@ def main():
             
             with col2:
                 if 'top_strength_areas' in saved_data and not strengths_df.empty:
-                    strengths_df = strengths_df.sort_values('frequency')
-                        
-                        # Create the bar chart with sorted data
                     strength_chart = px.bar(
-                        strengths_df, 
-                        x='area', 
-                        y='frequency', 
-                        title="Top Strength Areas"
-                    )
+                            strengths_df,
+                            x='area',
+                            y='frequency',
+                            title="Top Strength Areas"
+                        )
                         
-                        # Update layout for better readability
+                        # Modify x-axis label orientation
+                    strength_chart.update_xaxes(
+                            tickangle= -45,  # Angle of the labels
+                            tickmode='linear',  # Force all labels to show
+                            tickfont=dict(size=10)  # Adjust font size if needed
+                        )
+                        
+                        # Update layout to prevent label cutoff
                     strength_chart.update_layout(
-                        xaxis_tickangle=-45,  # Angle the x-axis labels
-                        height=500,  # Adjust height to accommodate labels
-                        margin=dict(b=100)  # Add bottom margin for rotated labels
-                    )
+                            height=500  # Adjust overall height to accommodate labels
+                        )
                         
-                        # Display the chart
+                        # Display the chart in Streamlit
                     st.plotly_chart(strength_chart, use_container_width=True)
 
             with col1:
@@ -1013,26 +1041,27 @@ def main():
             
             with col2:
                 if 'top_weak_areas' in saved_data and not weaknesses_df.empty:
-                    weaknesses_df = weaknesses_df.sort_values('frequency')
-                        
-                        # Create the bar chart with sorted data
                     weak_chart = px.bar(
-                        weaknesses_df, 
-                        x='area', 
-                        y='frequency', 
-                        title="Top Weak Areas"
-                    )
+                            weaknesses_df,
+                            x='area',
+                            y='frequency',
+                            title="Top Weak Areas"
+                        )
                         
-                        # Update layout for better readability
+                        # Modify x-axis label orientation
+                    weak_chart.update_xaxes(
+                            tickangle= -45,  # Angle of the labels
+                            tickmode='linear',  # Force all labels to show
+                            tickfont=dict(size=10)  # Adjust font size if needed
+                        )
+                        
+                        # Update layout to prevent label cutoff
                     weak_chart.update_layout(
-                        xaxis_tickangle=-45,  # Angle the x-axis labels
-                        height=500,  # Adjust height to accommodate labels
-                        margin=dict(b=100)  # Add bottom margin for rotated labels
-                    )
+                            height=500  # Adjust overall height to accommodate labels
+                        )
                         
-                        # Display the chart
+                        # Display the chart in Streamlit
                     st.plotly_chart(weak_chart, use_container_width=True)
-
 
             st.subheader("Insights for Improvement")
             if 'insights_for_improvement' in saved_data:
